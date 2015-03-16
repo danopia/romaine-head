@@ -47,8 +47,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Printf("<<< %+v\n", r)
 
-		var response map[string]interface{}
-		response = make(map[string]interface{})
+		response := make(map[string]interface{})
 		response["context"] = r.Context
 
 		if r.Cmd == "list chroots" {
