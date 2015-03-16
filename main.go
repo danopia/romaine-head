@@ -40,8 +40,7 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 	for {
 		var r Request
 
-		err := conn.ReadJSON(&r)
-		if err != nil {
+		if err := conn.ReadJSON(&r); err != nil {
 			log.Println("Error reading json: ", err)
 			return
 		}
@@ -72,9 +71,8 @@ func main() {
 	fmt.Println("Listening on port 6205...")
 
 	http.HandleFunc("/ws", serveWs)
-	err := http.ListenAndServe("localhost:6205", nil)
 
-	if err != nil {
+	if err := http.ListenAndServe("localhost:6205", nil); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
 }
