@@ -70,12 +70,12 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	fmt.Println("Listening on port 6205...")
+
 	http.HandleFunc("/ws", serveWs)
 	err := http.ListenAndServe("localhost:6205", nil)
 
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
-	} else {
-		fmt.Println("Listening on port 6205")
 	}
 }
