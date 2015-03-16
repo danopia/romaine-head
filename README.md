@@ -15,7 +15,5 @@ This project was built entirely on a Celeron Acer C720 Chromebook.
 4. Make it executable with `sudo chmod +x /usr/local/bin/romaine`
 
 ## Running
-1. Run `romaine` in a crosh `shell`.
+1. Run `sudo romaine` in a crosh `shell`.
 2. Open the [Romaine app](https://chrome.google.com/webstore/detail/romaine/akmgdkngbndhjenanchcijaappbglfgn).
-
-If you have a sudo password, run `sudo romaine` instead.
