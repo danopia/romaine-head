@@ -11,8 +11,9 @@ This project was built entirely on a Celeron Acer C720 Chromebook.
 ## Setup
 1. Download a binary from the [releases page](https://github.com/danopia/romaine-head/releases).
 2. Open crosh (Ctrl-Alt-T) and run `shell`
-3. Copy the bin into place with `sudo cp ~/Downloads/romaine-x64 /usr/local/bin/romaine`
-4. Make it executable with `sudo chmod +x /usr/local/bin/romaine`
+3. If you haven't use crouton yet, enter `sudo mkdir /usr/local/bin`
+4. Copy the bin into place with `sudo cp ~/Downloads/romaine-x64 /usr/local/bin/romaine`
+5. Make it executable with `sudo chmod +x /usr/local/bin/romaine`
 
 ## Running
 1. Run `sudo romaine` in a crosh `shell`.
