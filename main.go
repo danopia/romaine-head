@@ -49,16 +49,17 @@ func serveWs(w http.ResponseWriter, r *http.Request) {
 		response := make(map[string]interface{})
 		response["context"] = r.Context
 
-		if r.Cmd == "list chroots" {
+		switch r.Cmd {
+		case "list chroots":
 			response["chroots"] = strings.Split(listRoots(), "\n")
 
-		} else if r.Cmd == "run crouton" {
+		case "run crouton":
 			response["output"] = runCrouton(r.Args)
 
-		} else if r.Cmd == "run in chroot" {
+		case "run in chroot":
 			response["output"] = runInChroot(r.Chroot, r.Args)
 
-		} else {
+		default:
 			log.Fatal("Client ran unknown command " + r.Cmd)
 		}
 
