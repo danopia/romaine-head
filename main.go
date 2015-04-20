@@ -1,14 +1,14 @@
 package main
 
 import (
-	"log"
-	"fmt"
 	"flag"
+	"fmt"
+	"log"
 	"net/http"
 
+	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/leaf"
-	"github.com/danopia/romaine-head/common"
 )
 
 func main() {
