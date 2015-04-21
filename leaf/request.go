@@ -17,7 +17,7 @@ func HandleRequest(r common.Request) (response map[string]interface{}) {
 		response["info"] = getVersion()
 
 	case "execute":
-		response["port"] = runCommand(r.Args)
+		response["output"] = runCommand(r.Args)
 
 	default:
 		log.Fatal("Client ran unknown leaf command " + r.Cmd)
