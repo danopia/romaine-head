@@ -22,11 +22,10 @@ func ConnectToHead(url string, secret string) {
 	log.Printf("ok")
 
 	// Send a welcome packet for auth
-	var welcome = common.Packet{
+	conn.WriteJSON(&common.Packet{
 		Cmd:     "auth",
 		Context: secret,
-	}
-	conn.WriteJSON(&welcome)
+	})
 
 	for {
 		var p common.Packet
@@ -42,21 +41,4 @@ func ConnectToHead(url string, secret string) {
 			conn.WriteJSON(response)
 		}
 	}
-
-	/*
-		url := "ws://localhost:6205/ws"
-		ws, err := websocket.Dial(url, "", "http://localhost")
-		if err != nil {
-			log.Fatal(err)
-		}
-		if _, err := ws.Write([]byte("hello, world!\n")); err != nil {
-			log.Fatal(err)
-		}
-		var msg = make([]byte, 512)
-		var n int
-		if n, err = ws.Read(msg); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("Received: %s.\n", msg[:n])
-	*/
 }
