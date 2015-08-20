@@ -1,8 +1,8 @@
 package head
 
 import (
-	"strings"
 	"log"
+	"strings"
 
 	"github.com/danopia/romaine-head/common"
 )
@@ -10,20 +10,20 @@ import (
 func listRoots() []map[string]interface{} {
 	output, _ := common.RunCmd("ls", "-1", "/mnt/stateful_partition/crouton/chroots")
 	names := strings.Split(output, "\n")
-  chroots := make([]map[string]interface{}, len(names))
+	chroots := make([]map[string]interface{}, len(names))
 
-  for i, name := range names {
-    chroot := make(map[string]interface{})
-    chroot["key"] = name
+	for i, name := range names {
+		chroot := make(map[string]interface{})
+		chroot["key"] = name
 
-    if val, ok := GetLeaf(name); ok {
+		if val, ok := GetLeaf(name); ok {
 			chroot["state"] = val.State
-    } else {
+		} else {
 			chroot["state"] = "stopped"
 		}
 
-    chroots[i] = chroot
-  }
+		chroots[i] = chroot
+	}
 
 	return chroots
 }
@@ -39,7 +39,7 @@ func runInChroot(chroot string, cmd []string, context string) {
 	if leaf, ok := GetLeaf(chroot); ok {
 		if leaf.Conn != nil {
 			leaf.Conn.WriteJSON(&common.Packet{
-				Cmd: "exec",
+				Cmd:     "exec",
 				Context: context,
 				Extras: map[string]interface{}{
 					"Path": cmd[0],

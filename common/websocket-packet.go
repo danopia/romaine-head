@@ -14,7 +14,7 @@ var upgrader = websocket.Upgrader{
 }
 
 func ServePacketWs(handler func(Packet, *websocket.Conn)) func(http.ResponseWriter, *http.Request) {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			http.Error(w, "Method not allowed", 405)
 			return

@@ -3,8 +3,8 @@ package head
 import (
 	"log"
 
-	"github.com/gorilla/websocket"
 	"github.com/danopia/romaine-head/common"
+	"github.com/gorilla/websocket"
 )
 
 func HandleLeafStem(p common.Packet, conn *websocket.Conn) {
@@ -14,7 +14,7 @@ func HandleLeafStem(p common.Packet, conn *websocket.Conn) {
 
 	// Authenticate payload with a secret token
 	case "auth":
-		for name, leaf := range leaves{
+		for name, leaf := range leaves {
 			if leaf.Secret == p.Context {
 				leaf.Conn = conn
 				leaf.State = "running"
@@ -28,7 +28,7 @@ func HandleLeafStem(p common.Packet, conn *websocket.Conn) {
 	case "exec":
 		common.CurrentApp.WriteJSON(&map[string]interface{}{
 			"context": p.Context,
-			"output": p.Extras["Output"].(string),
+			"output":  p.Extras["Output"].(string),
 		})
 
 	default:

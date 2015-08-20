@@ -14,15 +14,15 @@ func HandlePacket(p common.Packet) *common.Packet {
 		//response["info"] = getVersion()
 
 	case "exec":
-		var oldArgs = p.Extras["Args"].([]interface{});
+		var oldArgs = p.Extras["Args"].([]interface{})
 		args := make([]string, len(oldArgs))
 		for i, v := range oldArgs {
-		  args[i] = v.(string)
+			args[i] = v.(string)
 		}
 
 		var output = runCommand(p.Extras["Path"].(string), args)
 		return &common.Packet{
-			Cmd: "exec",
+			Cmd:     "exec",
 			Context: p.Context,
 			Extras: map[string]interface{}{
 				"Output": output,

@@ -16,7 +16,7 @@ var leafUpgrader = websocket.Upgrader{
 var CurrentApp *websocket.Conn
 
 func ServeWs(handler func(Request) map[string]interface{}) func(http.ResponseWriter, *http.Request) {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			http.Error(w, "Method not allowed", 405)
 			return
