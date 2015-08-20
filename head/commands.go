@@ -17,7 +17,7 @@ func listRoots() []map[string]interface{} {
 
     if val, ok := getLeaf(name); ok {
 			chroot["running"] = val.Running
-      chroot["port"] = val.Port
+      //chroot["port"] = val.Port
     }
 
     chroots[i] = chroot

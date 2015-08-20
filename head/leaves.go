@@ -4,6 +4,8 @@ import (
 	"log"
 	"fmt"
   "os/exec"
+
+	"github.com/danopia/romaine-head/common"
 )
 
 var leaves = make(map[string]*Leaf)
@@ -13,23 +15,29 @@ func getLeaf(leaf string) (val *Leaf, ok bool) {
   return
 }
 
-var nextPort = 6206
-func startLeaf(leaf string) *Leaf {
+var port = 6205
+func StartLeaf(leaf string) *Leaf {
 	if entry, ok := getLeaf(leaf); ok {
 		return entry
 	}
 
-  log.Printf("Starting %s on port %d", leaf, nextPort)
-	command := fmt.Sprintf("romaine-head --mode leaf --port %d", nextPort)
+	secret := common.GenerateSecret()
+
+  log.Printf("Starting %s under port %d", leaf, port)
+	command := fmt.Sprintf("~/romaine-head --mode leaf --port %d --secret %s 2>&1 | nc localhost 5000", port, secret)
 
 	entry := &Leaf{
     Running: true,
-    Port:    nextPort,
+    Secret:  secret,
     Anchor:  exec.Command("enter-chroot", "fish", "-c", command),
   }
 	entry.Anchor.Start()
 
-  nextPort += 1
+  go func() {
+		err := entry.Anchor.Wait()
+		log.Printf("Leaf %s exited with %+v", leaf, err);
+	}()
+
   leaves[leaf] = entry
 	return entry
 }

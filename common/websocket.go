@@ -7,10 +7,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-var upgrader = websocket.Upgrader{
+var leafUpgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
-	CheckOrigin:     func(r *http.Request) bool { return true },
+	CheckOrigin:     func(r *http.Request) bool { return true }, // TODO
 }
 
 func ServeWs(handler func(Request) map[string]interface{}) func(http.ResponseWriter, *http.Request) {
@@ -20,7 +20,7 @@ func ServeWs(handler func(Request) map[string]interface{}) func(http.ResponseWri
 			return
 		}
 
-		conn, err := upgrader.Upgrade(w, r, nil)
+		conn, err := leafUpgrader.Upgrade(w, r, nil)
 		if err != nil {
 			log.Println(err)
 			return

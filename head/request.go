@@ -17,7 +17,7 @@ func HandleRequest(r common.Request) (response map[string]interface{}) {
 		response["chroots"] = listRoots()
 
 	case "start chroot":
-		response["port"] = startLeaf(r.Chroot).Port
+		//response["port"] = startLeaf(r.Chroot).Port
 
 	case "run crouton":
 		response["output"] = runCrouton(r.Args)

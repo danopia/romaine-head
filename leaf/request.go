@@ -6,23 +6,20 @@ import (
 	"github.com/danopia/romaine-head/common"
 )
 
-func HandleRequest(r common.Request) (response map[string]interface{}) {
-	log.Printf("<<< %+v\n", r)
+func HandlePacket(p common.Packet) *common.Packet {
+	log.Printf("head <<< %+v\n", p)
 
-	response = make(map[string]interface{})
-	response["context"] = r.Context
-
-	switch r.Cmd {
+	switch p.Cmd {
 	case "get info":
-		response["info"] = getVersion()
+		//response["info"] = getVersion()
 
 	case "execute":
-		response["output"] = runCommand(r.Args)
+		//response["output"] = runCommand(r.Args)
 
 	default:
-		log.Fatal("Client ran unknown leaf command " + r.Cmd)
+		log.Fatal("Head send unknown packet " + p.Cmd)
 	}
 
-	log.Printf(">>> response to %s: %+v\n", r.Context, response)
-	return
+	//log.Printf(">>> response to %s: %+v\n", r.Context, response)
+	return nil
 }

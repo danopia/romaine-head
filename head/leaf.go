@@ -6,6 +6,6 @@ import (
 
 type Leaf struct {
   Running bool
-  Port    int
+  Secret  string
   Anchor  *exec.Cmd
 }
