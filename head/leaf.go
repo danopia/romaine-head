@@ -2,10 +2,13 @@ package head
 
 import (
   "os/exec"
+
+	"github.com/gorilla/websocket"
 )
 
 type Leaf struct {
-  Running bool
+  State   string
   Secret  string
   Anchor  *exec.Cmd
+  Conn    *websocket.Conn
 }

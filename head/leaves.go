@@ -10,14 +10,14 @@ import (
 
 var leaves = make(map[string]*Leaf)
 
-func getLeaf(leaf string) (val *Leaf, ok bool) {
+func GetLeaf(leaf string) (val *Leaf, ok bool) {
   val, ok = leaves[leaf]
   return
 }
 
 var port = 6205
 func StartLeaf(leaf string) *Leaf {
-	if entry, ok := getLeaf(leaf); ok {
+	if entry, ok := GetLeaf(leaf); ok {
 		return entry
 	}
 
@@ -27,7 +27,7 @@ func StartLeaf(leaf string) *Leaf {
 	command := fmt.Sprintf("~/romaine-head --mode leaf --port %d --secret %s 2>&1 | nc localhost 5000", port, secret)
 
 	entry := &Leaf{
-    Running: true,
+    State:   "launching",
     Secret:  secret,
     Anchor:  exec.Command("enter-chroot", "fish", "-c", command),
   }
@@ -36,6 +36,12 @@ func StartLeaf(leaf string) *Leaf {
   go func() {
 		err := entry.Anchor.Wait()
 		log.Printf("Leaf %s exited with %+v", leaf, err);
+
+		if err != nil {
+			entry.State = "crashed"
+		} else {
+			entry.State = "stopped"
+		}
 	}()
 
   leaves[leaf] = entry

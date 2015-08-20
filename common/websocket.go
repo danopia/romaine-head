@@ -13,6 +13,8 @@ var leafUpgrader = websocket.Upgrader{
 	CheckOrigin:     func(r *http.Request) bool { return true }, // TODO
 }
 
+var CurrentApp *websocket.Conn
+
 func ServeWs(handler func(Request) map[string]interface{}) func(http.ResponseWriter, *http.Request) {
 	return func (w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
@@ -26,13 +28,14 @@ func ServeWs(handler func(Request) map[string]interface{}) func(http.ResponseWri
 			return
 		}
 
-		log.Println("Client connected")
+		log.Println("Client app connected")
+		CurrentApp = conn
 
 		for {
 			var r Request
 
 			if err := conn.ReadJSON(&r); err != nil {
-				log.Println("Error reading json: ", err)
+				log.Println("Error reading app json: ", err)
 				return
 			}
 

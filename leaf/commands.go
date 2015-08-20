@@ -19,7 +19,7 @@ func getVersion() map[string]string {
 	return fields
 }
 
-func runCommand(command []string) string {
-	output, _ := common.RunCmd(command[0], command[1:]...)
+func runCommand(path string, args []string) string {
+	output, _ := common.RunCmd(path, args...)
 	return output
 }

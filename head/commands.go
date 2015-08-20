@@ -2,6 +2,7 @@ package head
 
 import (
 	"strings"
+	"log"
 
 	"github.com/danopia/romaine-head/common"
 )
@@ -15,10 +16,11 @@ func listRoots() []map[string]interface{} {
     chroot := make(map[string]interface{})
     chroot["key"] = name
 
-    if val, ok := getLeaf(name); ok {
-			chroot["running"] = val.Running
-      //chroot["port"] = val.Port
-    }
+    if val, ok := GetLeaf(name); ok {
+			chroot["state"] = val.State
+    } else {
+			chroot["state"] = "stopped"
+		}
 
     chroots[i] = chroot
   }
@@ -31,7 +33,22 @@ func runCrouton(args []string) string {
 	return output
 }
 
-func runInChroot(chroot string, cmd []string) string {
-	output, _ := common.RunCmd("sudo", append([]string{"enter-chroot"}, cmd...)...)
-	return output
+func runInChroot(chroot string, cmd []string, context string) {
+	// output, _ := common.RunCmd("sudo", append([]string{"enter-chroot"}, cmd...)...)
+
+	if leaf, ok := GetLeaf(chroot); ok {
+		if leaf.Conn != nil {
+			leaf.Conn.WriteJSON(&common.Packet{
+				Cmd: "exec",
+				Context: context,
+				Extras: map[string]interface{}{
+					"Path": cmd[0],
+					"Args": cmd[1:],
+				},
+			})
+
+		} else {
+			log.Printf("chroot %s isn't running", chroot)
+		}
+	}
 }
