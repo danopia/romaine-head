@@ -1,20 +1,21 @@
-package head
+package stem
 
 import (
 	"log"
 
 	"github.com/danopia/romaine-head/common"
+	"github.com/danopia/romaine-head/head"
 	"github.com/gorilla/websocket"
 )
 
-func HandleLeafStem(p common.Packet, conn *websocket.Conn) {
+func HandlePacket(p *common.Packet, conn *websocket.Conn) {
 	log.Printf("leaf <<< %+v\n", p)
 
 	switch p.Cmd {
 
 	// Authenticate payload with a secret token
 	case "auth":
-		for name, leaf := range leaves {
+		for name, leaf := range head.Leaves {
 			if leaf.Secret == p.Context {
 				leaf.Conn = conn
 				leaf.State = "running"
@@ -26,7 +27,7 @@ func HandleLeafStem(p common.Packet, conn *websocket.Conn) {
 
 	// Response from an execution
 	case "exec":
-		common.CurrentApp.WriteJSON(&map[string]interface{}{
+		head.CurrentApp.WriteJSON(&map[string]interface{}{
 			"context": p.Context,
 			"output":  p.Extras["Output"].(string),
 		})

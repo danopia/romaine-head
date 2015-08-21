@@ -12,10 +12,10 @@ import (
 
 const headPath = "~/Downloads/romaine-head.run"
 
-var leaves = make(map[string]*Leaf)
+var Leaves = make(map[string]*Leaf)
 
 func GetLeaf(leaf string) (val *Leaf, ok bool) {
-	val, ok = leaves[leaf]
+	val, ok = Leaves[leaf]
 	return
 }
 
@@ -53,6 +53,6 @@ func StartLeaf(leaf string) *Leaf {
 		}
 	}()
 
-	leaves[leaf] = entry
+	Leaves[leaf] = entry
 	return entry
 }

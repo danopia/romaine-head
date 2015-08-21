@@ -1,12 +1,12 @@
-package head
+package app
 
 import (
 	"log"
 
-	"github.com/danopia/romaine-head/common"
+	"github.com/danopia/romaine-head/head"
 )
 
-func HandleRequest(r common.Request) (response map[string]interface{}) {
+func HandleRequest(r *Request) (response map[string]interface{}) {
 	log.Printf("<<< %+v\n", r)
 
 	response = make(map[string]interface{})
@@ -17,7 +17,7 @@ func HandleRequest(r common.Request) (response map[string]interface{}) {
 		response["chroots"] = listRoots()
 
 	case "start chroot":
-		StartLeaf(r.Chroot)
+		head.StartLeaf(r.Chroot)
 		response["status"] = "launching"
 
 	case "run crouton":

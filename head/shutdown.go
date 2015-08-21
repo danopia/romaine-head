@@ -20,7 +20,7 @@ func WaitForShutdown() {
 func ShutdownLeaves() {
 	log.Println("Shutting down leaves")
 
-	for _, leaf := range leaves {
+	for _, leaf := range Leaves {
 		if leaf != nil && (leaf.State == "launching" || leaf.State == "running") {
 			leaf.Anchor.Process.Kill()
 		}

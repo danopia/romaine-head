@@ -1,10 +1,11 @@
-package head
+package app
 
 import (
 	"log"
 	"strings"
 
 	"github.com/danopia/romaine-head/common"
+	"github.com/danopia/romaine-head/head"
 )
 
 func listRoots() []map[string]interface{} {
@@ -16,7 +17,7 @@ func listRoots() []map[string]interface{} {
 		chroot := make(map[string]interface{})
 		chroot["key"] = name
 
-		if val, ok := GetLeaf(name); ok {
+		if val, ok := head.GetLeaf(name); ok {
 			chroot["state"] = val.State
 		} else {
 			chroot["state"] = "stopped"
@@ -36,7 +37,7 @@ func runCrouton(args []string) string {
 func runInChroot(chroot string, cmd []string, context string) {
 	// output, _ := common.RunCmd("sudo", append([]string{"enter-chroot"}, cmd...)...)
 
-	if leaf, ok := GetLeaf(chroot); ok {
+	if leaf, ok := head.GetLeaf(chroot); ok {
 		if leaf.Conn != nil {
 			leaf.Conn.WriteJSON(&common.Packet{
 				Cmd:     "exec",

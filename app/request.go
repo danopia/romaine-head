@@ -1,4 +1,4 @@
-package common
+package app
 
 // Request represents what a client might ask
 type Request struct {

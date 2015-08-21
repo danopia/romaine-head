@@ -6,9 +6,11 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/danopia/romaine-head/app"
 	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/leaf"
+	"github.com/danopia/romaine-head/stem"
 )
 
 func main() {
@@ -21,8 +23,8 @@ func main() {
 	case "head":
 		log.SetPrefix("[chronos] ")
 
-		http.HandleFunc("/app", common.ServeWs(head.HandleRequest))
-		http.HandleFunc("/stem", common.ServePacketWs(head.HandleLeafStem))
+		http.HandleFunc("/app", common.ServeWs(app.HandleConn))
+		http.HandleFunc("/stem", common.ServeWs(stem.HandleLeafConn))
 
 		head.WaitForShutdown()
 		defer head.ShutdownLeaves()
