@@ -27,7 +27,6 @@ cat << EOF > $TEMP/run
     $INSTALL_PATH \$*
   elif [ \$USER = chronos ]; then
     sudo cp $APP_NAME $INSTALL_PATH
-    echo
     sudo $INSTALL_PATH \$*
   else
     # assuming we're in a chroot, just launch
