@@ -6,8 +6,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/kr/text"
 	"github.com/danopia/romaine-head/common"
+	"github.com/kr/text"
 )
 
 const headPath = "~/Downloads/romaine-head.run"

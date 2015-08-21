@@ -3,8 +3,8 @@ package app
 import (
 	"log"
 
-	"github.com/gorilla/websocket"
 	"github.com/danopia/romaine-head/head"
+	"github.com/gorilla/websocket"
 )
 
 func HandleConn(conn *websocket.Conn) {

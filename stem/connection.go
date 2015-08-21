@@ -3,8 +3,8 @@ package stem
 import (
 	"log"
 
-	"github.com/gorilla/websocket"
 	"github.com/danopia/romaine-head/common"
+	"github.com/gorilla/websocket"
 )
 
 func HandleLeafConn(conn *websocket.Conn) {
