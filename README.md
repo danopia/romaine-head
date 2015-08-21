@@ -18,3 +18,12 @@ This project was built entirely on a Celeron Acer C720 Chromebook.
 ## Running
 1. Run `sudo romaine` in a crosh `shell`.
 2. Open the [Romaine app](https://chrome.google.com/webstore/detail/romaine/akmgdkngbndhjenanchcijaappbglfgn).
+
+## Development
+Run something like this in a cronos shell to build and run from git:
+
+```shell
+sudo enter-chroot sh go/src/github.com/danopia/romaine-head/build.sh && sh ~/Downloads/romaine-head.run
+```
+
+You can store the command in a cronos shell script for ease of use.
