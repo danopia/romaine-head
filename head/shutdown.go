@@ -21,6 +21,8 @@ func ShutdownLeaves() {
 	log.Println("Shutting down leaves")
 
 	for _, leaf := range leaves {
-		leaf.Anchor.Process.Kill()
+		if leaf != nil && (leaf.State == "launching" || leaf.State == "running") {
+			leaf.Anchor.Process.Kill()
+		}
 	}
 }

@@ -25,7 +25,7 @@ func StartLeaf(leaf string) *Leaf {
 	secret := common.GenerateSecret()
 
 	log.Printf("Starting %s under port %d", leaf, port)
-	command := fmt.Sprintf("~/romaine-head --mode leaf --port %d --secret %s 2>&1 | nc localhost 5000", port, secret)
+	command := fmt.Sprintf("~/Downloads/romaine-head.run -- --mode leaf --port %d --secret %s 2>&1 | nc localhost 5000", port, secret)
 
 	entry := &Leaf{
 		State:  "launching",
