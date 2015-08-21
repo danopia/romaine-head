@@ -21,7 +21,7 @@ func main() {
 	case "head":
 		log.SetPrefix("[chronos] ")
 
-		http.HandleFunc("/ws", common.ServeWs(head.HandleRequest))
+		http.HandleFunc("/app", common.ServeWs(head.HandleRequest))
 		http.HandleFunc("/stem", common.ServePacketWs(head.HandleLeafStem))
 
 		head.WaitForShutdown()
