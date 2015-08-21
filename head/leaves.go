@@ -3,10 +3,14 @@ package head
 import (
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 
+	"github.com/kr/text"
 	"github.com/danopia/romaine-head/common"
 )
+
+const headPath = "~/Downloads/romaine-head.run"
 
 var leaves = make(map[string]*Leaf)
 
@@ -25,13 +29,17 @@ func StartLeaf(leaf string) *Leaf {
 	secret := common.GenerateSecret()
 
 	log.Printf("Starting %s under port %d", leaf, port)
-	command := fmt.Sprintf("~/Downloads/romaine-head.run -- --mode leaf --port %d --secret %s 2>&1 | nc localhost 5000", port, secret)
+	command := fmt.Sprintf("%s -- --mode leaf --port %d --secret %s 2>&1", headPath, port, secret)
+
+	prefix := []byte(fmt.Sprintf("[%s] ", leaf))
+	output := text.NewIndentWriter(os.Stdout, prefix)
 
 	entry := &Leaf{
 		State:  "launching",
 		Secret: secret,
-		Anchor: exec.Command("enter-chroot", "fish", "-c", command),
+		Anchor: exec.Command("enter-chroot", "sh", "-c", command),
 	}
+	entry.Anchor.Stdout = output
 	entry.Anchor.Start()
 
 	go func() {

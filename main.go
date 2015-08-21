@@ -19,6 +19,8 @@ func main() {
 
 	switch *mode {
 	case "head":
+		log.SetPrefix("[chronos] ")
+
 		http.HandleFunc("/ws", common.ServeWs(head.HandleRequest))
 		http.HandleFunc("/stem", common.ServePacketWs(head.HandleLeafStem))
 

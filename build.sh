@@ -36,4 +36,5 @@ EOF
 
 # package self-running blob
 rm $OUTPUT_PATH
-makeself --nocomp $TEMP $OUTPUT_PATH $APP_NAME "sh ./run" > /dev/null
+makeself --nocomp $TEMP $OUTPUT_PATH $APP_NAME "sh ./run" 2>&1 >/dev/null \
+  | grep -vE "(^./|test: x|^Header is \d+ lines)" # ignore common output
