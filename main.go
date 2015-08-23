@@ -29,8 +29,6 @@ func main() {
 		head.WaitForShutdown()
 		defer head.ShutdownLeaves()
 
-		head.StartLeaf("precise")
-
 		host := fmt.Sprint("localhost:", *port)
 		log.Printf("Listening on %s...", host)
 		if err := http.ListenAndServe(host, nil); err != nil {

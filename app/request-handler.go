@@ -17,8 +17,11 @@ func HandleRequest(r *Request) (response map[string]interface{}) {
 		response["chroots"] = listRoots()
 
 	case "start chroot":
-		head.StartLeaf(r.Chroot)
-		response["status"] = "launching"
+		leaf := head.StartLeaf(r.Chroot)
+		leaf.PendingContext = r.Context
+
+		response["status"] = "starting"
+		response["pending"] = true
 
 	case "run crouton":
 		response["output"] = runCrouton(r.Args)

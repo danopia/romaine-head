@@ -11,4 +11,6 @@ type Leaf struct {
 	Secret string
 	Anchor *exec.Cmd
 	Conn   *websocket.Conn
+
+	PendingContext string
 }

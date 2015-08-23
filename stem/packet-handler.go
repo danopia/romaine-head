@@ -21,6 +21,16 @@ func HandlePacket(p *common.Packet, conn *websocket.Conn) {
 				leaf.State = "running"
 
 				log.Printf("Leaf identified as %s", name)
+
+				// Send availability notification if requested
+				if leaf.PendingContext != "" {
+					head.CurrentApp.WriteJSON(&map[string]interface{}{
+						"context": leaf.PendingContext,
+						"status": "running",
+					})
+					leaf.PendingContext = ""
+				}
+
 				return
 			}
 		}
