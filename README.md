@@ -1,7 +1,8 @@
 # romaine-head
 The background service for Romaine, a crouton packaged app for Chrome OS chrooting
 
-This project was built entirely on a Celeron Acer C720 Chromebook.
+This project was started on a Celeron Acer C720
+and is being continued on a Pixel 2015.
 
 ## Requirements
 * Your device must be in dev mode.
@@ -20,7 +21,7 @@ This project was built entirely on a Celeron Acer C720 Chromebook.
 2. Open the [Romaine app](https://chrome.google.com/webstore/detail/romaine/akmgdkngbndhjenanchcijaappbglfgn).
 
 ## Development
-Run something like this in a cronos shell to build and run from git:
+Run something like this in a chronos shell to build and run from git:
 
 ```shell
 sudo enter-chroot sh go/src/github.com/danopia/romaine-head/build.sh && sh ~/Downloads/romaine-head.run
