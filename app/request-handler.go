@@ -26,6 +26,9 @@ func HandleRequest(r *Request) (response map[string]interface{}) {
 	case "run crouton":
 		response["output"] = runCrouton(r.Args)
 
+	case "build chroot":
+		response["output"] = buildChroot(r.Args, r.Extras["stdin"].(string))
+
 	case "run in chroot":
 		runInChroot(r.Chroot, r.Args, r.Context)
 		response["pending"] = true

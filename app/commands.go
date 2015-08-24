@@ -34,6 +34,11 @@ func runCrouton(args []string) string {
 	return output
 }
 
+func buildChroot(args []string, stdin string) string {
+	output, _ := common.RunCmdWithStdin("sh", append([]string{"/home/chronos/user/Downloads/crouton"}, args...), stdin)
+	return output
+}
+
 func runInChroot(chroot string, cmd []string, context string) {
 	// output, _ := common.RunCmd("sudo", append([]string{"enter-chroot"}, cmd...)...)
 

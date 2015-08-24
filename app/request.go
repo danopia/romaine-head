@@ -6,4 +6,5 @@ type Request struct {
 	Args    []string
 	Chroot  string
 	Context string
+	Extras  map[string]interface{}
 }
