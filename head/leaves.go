@@ -37,7 +37,7 @@ func StartLeaf(leaf string) *Leaf {
 	entry := &Leaf{
 		State:  "launching",
 		Secret: secret,
-		Anchor: exec.Command("enter-chroot", "sh", "-c", command),
+		Anchor: exec.Command("enter-chroot", "-n", leaf, "sh", "-c", command),
 	}
 	entry.Anchor.Stdout = output
 	entry.Anchor.Start()
