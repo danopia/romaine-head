@@ -3,19 +3,22 @@ package app
 import (
 	"log"
 
-	"github.com/danopia/romaine-head/head"
+	// "github.com/danopia/romaine-head/head"
+	"github.com/danopia/romaine-head/ddp"
 )
 
-func HandleRequest(r *Request) (response map[string]interface{}) {
-	log.Printf("<<< %+v\n", r)
+func RefreshChroots() {
+	for _, item := range listRoots() {
+		ddp.Chroots.Set(item["key"].(string), map[string]interface{}{
+			"status": item["state"].(string),
+			"distro": "precise",
+		})
+	}
 
-	response = make(map[string]interface{})
-	response["context"] = r.Context
+	log.Printf("Refreshed chroot collection")
+}
 
-	switch r.Cmd {
-	case "list chroots":
-		response["chroots"] = listRoots()
-
+/*
 	case "start chroot":
 		leaf := head.StartLeaf(r.Chroot)
 		leaf.PendingContext = r.Context
@@ -41,3 +44,4 @@ func HandleRequest(r *Request) (response map[string]interface{}) {
 	log.Printf(">>> response to %s: %+v\n", r.Context, response)
 	return
 }
+*/

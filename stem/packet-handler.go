@@ -5,6 +5,7 @@ import (
 
 	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/head"
+	"github.com/danopia/romaine-head/ddp"
 	"github.com/gorilla/websocket"
 )
 
@@ -22,14 +23,13 @@ func HandlePacket(p *common.Packet, conn *websocket.Conn) {
 
 				log.Printf("Leaf identified as %s", name)
 
-				// Send availability notification if requested
-				if leaf.PendingContext != "" {
-					head.CurrentApp.WriteJSON(&map[string]interface{}{
-						"context": leaf.PendingContext,
-						"status": "running",
-					})
-					leaf.PendingContext = ""
-				}
+				ddp.Chroots.Set(name, map[string]interface{}{
+					"status": "running",
+					"distro": "precise",
+				})
+
+				// TODO: respond to the DDP method
+				leaf.PendingContext = ""
 
 				return
 			}
@@ -37,8 +37,7 @@ func HandlePacket(p *common.Packet, conn *websocket.Conn) {
 
 	// Response from an execution
 	case "exec":
-		head.CurrentApp.WriteJSON(&map[string]interface{}{
-			"context": p.Context,
+		ddp.Commands.Set(p.Context, map[string]interface{}{
 			"output":  p.Extras["Output"].(string),
 		})
 
