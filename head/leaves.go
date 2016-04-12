@@ -7,6 +7,7 @@ import (
 	"os/exec"
 
 	"github.com/danopia/romaine-head/common"
+	"github.com/danopia/romaine-head/ddp"
 	"github.com/kr/text"
 )
 
@@ -19,7 +20,7 @@ func GetLeaf(leaf string) (val *Leaf, ok bool) {
 	return
 }
 
-var port = 6205
+var port = 6206
 
 func StartLeaf(leaf string) *Leaf {
 	if entry, ok := GetLeaf(leaf); ok {
@@ -39,6 +40,11 @@ func StartLeaf(leaf string) *Leaf {
 		Secret: secret,
 		Anchor: exec.Command("enter-chroot", "-n", leaf, "sh", "-c", command),
 	}
+	ddp.Chroots.Set(leaf, map[string]interface{}{
+		"status": entry.State,
+		"distro": "precise",
+	})
+
 	entry.Anchor.Stdout = output
 	entry.Anchor.Start()
 
@@ -51,6 +57,11 @@ func StartLeaf(leaf string) *Leaf {
 		} else {
 			entry.State = "stopped"
 		}
+
+		ddp.Chroots.Set(leaf, map[string]interface{}{
+			"status": entry.State,
+			"distro": "precise",
+		})
 	}()
 
 	Leaves[leaf] = entry

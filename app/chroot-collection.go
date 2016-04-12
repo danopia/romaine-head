@@ -3,7 +3,7 @@ package app
 import (
 	"log"
 
-	// "github.com/danopia/romaine-head/head"
+	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/ddp"
 )
 
@@ -16,6 +16,14 @@ func RefreshChroots() {
 	}
 
 	log.Printf("Refreshed chroot collection")
+}
+
+func init() {
+	ddp.Methods["start chroot"] = func(args... interface{}) interface{} {
+		chroot := args[0].(string)
+		head.StartLeaf(chroot)
+		return true
+	}
 }
 
 /*

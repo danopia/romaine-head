@@ -28,9 +28,6 @@ func HandlePacket(p *common.Packet, conn *websocket.Conn) {
 					"distro": "precise",
 				})
 
-				// TODO: respond to the DDP method
-				leaf.PendingContext = ""
-
 				return
 			}
 		}
@@ -38,7 +35,7 @@ func HandlePacket(p *common.Packet, conn *websocket.Conn) {
 	// Response from an execution
 	case "exec":
 		ddp.Commands.Set(p.Context, map[string]interface{}{
-			"output":  p.Extras["Output"].(string),
+			"output": p.Extras["Output"].(string),
 		})
 
 	default:
