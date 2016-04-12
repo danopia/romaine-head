@@ -18,7 +18,7 @@ type Publication struct {
 type Update struct {
 	Id string
 	Delete bool
-	NewDoc map[string]interface{}
+	Fields map[string]interface{}
 }
 
 func CreatePublication(name string) *Publication {
@@ -40,20 +40,32 @@ func CreatePublication(name string) *Publication {
 					Id: update.Id,
 				})
 			} else if update.Id != "" {
+
+				doc, exists := pub.Documents[update.Id]
+
+				// Update in-memory data store
+				if !exists {
+					doc = make(map[string]interface{})
+					pub.Documents[update.Id] = doc
+				}
+
+				for key, val := range update.Fields {
+					doc[key] = val
+				}
+
+				// Build and broadcast the message
 				msg := &Message{
 					Collection: pub.Name,
 					Id: update.Id,
-					Fields: update.NewDoc,
+					Fields: update.Fields,
 				}
 
-				if _, ok := pub.Documents[update.Id]; ok {
+				if exists {
 					msg.Type = "changed"
 				} else {
 					msg.Type = "added"
 				}
 
-				// TODO: apply changes, don't replace
-				pub.Documents[update.Id] = update.NewDoc
 				pub.Broadcast(msg)
 			}
 		}
@@ -97,8 +109,15 @@ func (pub Publication) Get(id string) map[string]interface{} {
 func (pub Publication) Set(id string, doc map[string]interface{}) {
 	pub.Tube <- &Update{
 		Id: id,
-		NewDoc: doc,
+		Fields: doc,
 	}
+}
+
+// Helper for setting a single field
+func (pub Publication) SetField(id string, key string, val interface{}) {
+	fields := make(map[string]interface{})
+	fields[key] = val
+	pub.Set(id, fields)
 }
 
 func (pub Publication) Delete(id string) {

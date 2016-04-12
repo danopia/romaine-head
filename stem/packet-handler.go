@@ -20,13 +20,9 @@ func HandlePacket(p *common.Packet, conn *websocket.Conn) {
 			if leaf.Secret == p.Context {
 				leaf.Conn = conn
 				leaf.State = "running"
+				ddp.Chroots.SetField(name, "status", "running")
 
 				log.Printf("Leaf identified as %s", name)
-
-				ddp.Chroots.Set(name, map[string]interface{}{
-					"status": "running",
-					"distro": "precise",
-				})
 
 				return
 			}

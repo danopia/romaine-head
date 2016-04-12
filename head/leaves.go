@@ -40,10 +40,7 @@ func StartLeaf(leaf string) *Leaf {
 		Secret: secret,
 		Anchor: exec.Command("enter-chroot", "-n", leaf, "sh", "-c", command),
 	}
-	ddp.Chroots.Set(leaf, map[string]interface{}{
-		"status": entry.State,
-		"distro": "precise",
-	})
+	ddp.Chroots.SetField(leaf, "status", entry.State)
 
 	entry.Anchor.Stdout = output
 	entry.Anchor.Start()
@@ -58,10 +55,7 @@ func StartLeaf(leaf string) *Leaf {
 			entry.State = "stopped"
 		}
 
-		ddp.Chroots.Set(leaf, map[string]interface{}{
-			"status": entry.State,
-			"distro": "precise",
-		})
+		ddp.Chroots.SetField(leaf, "status", entry.State)
 	}()
 
 	Leaves[leaf] = entry
