@@ -29,6 +29,14 @@ func HandlePacket(p common.Packet) *common.Packet {
 			},
 		}
 
+	case "shutdown":
+		// TODO: do cleanup here
+
+		return &common.Packet{
+			Cmd:     "shutdown",
+			Context: p.Context,
+		}
+
 	default:
 		log.Printf("Head sent unknown packet %s", p.Cmd)
 	}

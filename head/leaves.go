@@ -23,7 +23,7 @@ func GetLeaf(leaf string) (val *Leaf, ok bool) {
 var port = 6206
 
 func StartLeaf(leaf string) *Leaf {
-	if entry, ok := GetLeaf(leaf); ok {
+	if entry, ok := GetLeaf(leaf); ok && entry.Anchor != nil {
 		return entry
 	}
 
@@ -54,6 +54,7 @@ func StartLeaf(leaf string) *Leaf {
 		} else {
 			entry.State = "stopped"
 		}
+		entry.Anchor = nil
 
 		ddp.Chroots.SetField(leaf, "status", entry.State)
 	}()

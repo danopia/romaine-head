@@ -40,5 +40,10 @@ func ConnectToHead(url string, secret string) {
 		if response != nil {
 			conn.WriteJSON(response)
 		}
+
+		// TODO: handle this better
+		if p.Cmd == "shutdown" {
+			break
+		}
 	}
 }

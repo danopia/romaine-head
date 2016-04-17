@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/danopia/romaine-head/head"
+	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/ddp"
 )
 
@@ -23,6 +24,25 @@ func init() {
 		chroot := args[0].(string)
 		head.StartLeaf(chroot)
 		return true
+	}
+
+	ddp.Methods["stop chroot"] = func(args... interface{}) interface{} {
+		chroot := args[0].(string)
+		if leaf, ok := head.GetLeaf(chroot); ok {
+			if leaf.Conn != nil {
+				leaf.State = "stopping"
+				ddp.Chroots.SetField(chroot, "status", leaf.State)
+
+				leaf.Conn.WriteJSON(&common.Packet{
+					Cmd:     "shutdown",
+				})
+				log.Printf("Issued shutdown command to %s", chroot)
+				return true
+			}
+		}
+
+		log.Printf("chroot %s isn't running", chroot)
+		return false
 	}
 }
 
