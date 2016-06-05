@@ -13,6 +13,7 @@ type Message struct {
 	Collection string        `json:"collection,omitempty"`
 	Fields     map[string]interface{} `json:"fields,omitempty"`
 	Subs       []string      `json:"subs,omitempty"`
+	Methods    []string      `json:"methods,omitempty"`
 	Error      map[string]interface{} `json:"error,omitempty"` // TODO: struct?
 	Result     interface{}   `json:"result,omitempty"`
 }

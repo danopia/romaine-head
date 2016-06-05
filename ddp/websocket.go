@@ -33,7 +33,7 @@ func ServeSockJs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	out := make(chan *Message)
+	out := make(chan *Message, 100) // TODO: hack
 	go pumpMessages(out, conn)
 
 	out <- &Message{
@@ -79,6 +79,7 @@ func pumpMessages(tube chan *Message, conn *websocket.Conn) {
 		writer, err := conn.NextWriter(websocket.TextMessage)
 		if err != nil {
 			log.Println("Error starting to write message")
+			// TODO: unsubscribe from everything
 			return
 		}
 

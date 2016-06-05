@@ -24,6 +24,8 @@ func HandlePacket(p *common.Packet, conn *websocket.Conn) {
 
 				log.Printf("Leaf identified as %s", name)
 
+				// startLeaf(leaf)
+
 				return
 			}
 		}
