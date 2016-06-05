@@ -8,6 +8,9 @@ import (
 
 var Chroots *Publication
 var Commands *Publication
+
+var Methods map[string]func(args... interface{}) interface{}
+
 func init() {
 	Chroots = CreatePublication("chroots")
 	Commands = CreatePublication("commands")
@@ -15,7 +18,6 @@ func init() {
 	Methods = make(map[string]func(args... interface{}) interface{})
 }
 
-var Methods map[string]func(args... interface{}) interface{}
 
 func HandleMessage(m *Message, out chan *Message) {
 	log.Printf("<<< %+v", m)
@@ -40,14 +42,22 @@ func HandleMessage(m *Message, out chan *Message) {
 		})
 
 	case "method":
-		if handler, ok := Methods[m.Method]; ok {
-			result := handler(m.Params...)
+		go runMethod(m, out)
+	}
+}
 
-			out <- &Message{
-				Type: "result",
-				Id: m.Id,
-				Result: result,
-			}
+func runMethod(m *Message, out chan *Message) {
+	if handler, ok := Methods[m.Method]; ok {
+		log.Printf("Running method %s")
+
+		result := handler(m.Params...)
+		out <- &Message{
+			Type: "result",
+			Id: m.Id,
+			Result: result,
 		}
+
+	} else {
+		log.Println("Client called nonexistant DDP method", m.Method)
 	}
 }
