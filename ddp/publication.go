@@ -1,16 +1,10 @@
 package ddp
 
 import "log"
-import "container/list"
-
-type Subscription struct {
-	Tube chan *Message
-	Id string
-}
 
 type Publication struct {
 	Name string
-	Subs *list.List
+	Subs map[string]*ClientSub
 	Documents map[string]map[string]interface{}
 	Tube chan *Update
 }
@@ -24,7 +18,7 @@ type Update struct {
 func CreatePublication(name string) *Publication {
 	pub := &Publication{
 		Name: name,
-		Subs: list.New(),
+		Subs: make(map[string]*ClientSub),
 		Documents: make(map[string]map[string]interface{}),
 		Tube: make(chan *Update),
 	}
@@ -75,20 +69,18 @@ func CreatePublication(name string) *Publication {
 }
 
 func (pub Publication) Broadcast(msg *Message) {
-	log.Println("About to broadcast")
-	for e := pub.Subs.Front(); e != nil; e = e.Next() {
-		e.Value.(*Subscription).Tube <- msg
-		log.Println("Sent")
+	for _, sub := range pub.Subs {
+		sub.Client.Sink <- msg
 	}
-	log.Println("Done")
 }
 
-func (pub Publication) Subscribe(sub *Subscription) {
-	pub.Subs.PushBack(sub)
+func (pub Publication) Subscribe(sub *ClientSub) {
+	pub.Subs[sub.Id] = sub
+	sub.Client.Subs[sub.Id] = sub
 	log.Println("Added sub")
 
 	for id, doc := range pub.Documents {
-		sub.Tube <- &Message{
+		sub.Client.Sink <- &Message{
 			Type: "added",
 			Collection: pub.Name,
 			Id: id,
@@ -96,8 +88,27 @@ func (pub Publication) Subscribe(sub *Subscription) {
 		}
 	}
 
-	sub.Tube <- &Message{
+	sub.Client.Sink <- &Message{
 		Type: "ready",
+		Subs: []string{sub.Id},
+	}
+}
+
+func (pub Publication) Unsubscribe(sub *ClientSub) {
+	delete(pub.Subs, sub.Id)
+	delete(sub.Client.Subs, sub.Id)
+	log.Println("Removed sub")
+
+	for id, _ := range pub.Documents {
+		sub.Client.Sink <- &Message{
+			Type: "removed",
+			Collection: pub.Name,
+			Id: id,
+		}
+	}
+
+	sub.Client.Sink <- &Message{
+		Type: "nosub",
 		Subs: []string{sub.Id},
 	}
 }

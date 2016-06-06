@@ -35,14 +35,14 @@ func RefreshChroots() {
 func init() {
 	// Garbage collect a command from memory
 	// Issued after client is done with the output
-	ddp.Methods["/commands/expire"] = func(args... interface{}) interface{} {
+	ddp.Methods["/commands/expire"] = func(c *ddp.Client, args... interface{}) interface{} {
 		id := args[0].(string)
 		ddp.Commands.Delete(id)
 		return true
 	}
 
 	// Spool off a command to run
-	ddp.Methods["/commands/exec"] = func(args... interface{}) interface{} {
+	ddp.Methods["/commands/exec"] = func(c *ddp.Client, args... interface{}) interface{} {
 		chroot := args[0].(string)
 		path := args[1].(string)
 		params := args[2].([]interface{})

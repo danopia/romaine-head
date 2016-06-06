@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/danopia/romaine-head/common"
 	"github.com/gorilla/websocket"
 )
 
@@ -26,41 +27,36 @@ func ServeSockJs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	c := Client{
+		Conn: conn,
+		Session: common.GenerateSecret(),
+		Subs: make(map[string]*ClientSub),
+		Source: make(chan *Message),
+		Sink: make(chan *Message),
+	}
+
 	log.Println("Websocket client connected")
-	err = conn.WriteMessage(websocket.TextMessage, []byte("o"))
+	err = c.Conn.WriteMessage(websocket.TextMessage, []byte("o"))
 	if err != nil {
 		log.Println("Error writing welcome")
 		return
 	}
 
-	out := make(chan *Message, 100) // TODO: hack
-	go pumpMessages(out, conn)
-
-	out <- &Message{
+	go c.pumpMessages()
+	c.Sink <- &Message{
 		ServerId: "0",
 	}
 
-	for {
-		var frames []string
-		if err := conn.ReadJSON(&frames); err != nil {
-			log.Println("Error reading websocket json: ", err)
-			return
-		}
+	go c.handleMessages()
+	c.readMessages()
 
-		for _, frame := range frames {
-			var message Message
-			if err := json.Unmarshal([]byte(frame), &message); err != nil {
-				log.Println("Error reading websocket frame: ", err)
-				return
-			}
-
-			HandleMessage(&message, out)
-		}
+	for id, sub := range c.Subs {
+		delete(sub.Publication.Subs, id)
 	}
 }
 
-func pumpMessages(tube chan *Message, conn *websocket.Conn) {
-	for msg := range tube {
+func (c *Client) pumpMessages() {
+	for msg := range c.Sink {
 		log.Printf(">>> %+v", msg)
 
 		frame, err := json.Marshal(msg)
@@ -76,7 +72,7 @@ func pumpMessages(tube chan *Message, conn *websocket.Conn) {
 			return
 		}
 
-		writer, err := conn.NextWriter(websocket.TextMessage)
+		writer, err := c.Conn.NextWriter(websocket.TextMessage)
 		if err != nil {
 			log.Println("Error starting to write message")
 			// TODO: unsubscribe from everything
@@ -86,5 +82,26 @@ func pumpMessages(tube chan *Message, conn *websocket.Conn) {
 		writer.Write([]byte("a"))
 		writer.Write(payload)
 		writer.Close()
+	}
+}
+
+func (c *Client) readMessages() {
+	for {
+		var frames []string
+		if err := c.Conn.ReadJSON(&frames); err != nil {
+			log.Println("Error reading websocket json: ", err)
+			close(c.Sink)
+			close(c.Source)
+			return
+		}
+
+		for _, frame := range frames {
+			var message Message
+			if err := json.Unmarshal([]byte(frame), &message); err != nil {
+				log.Println("Error reading websocket frame: ", err)
+				return
+			}
+			c.Source <- &message
+		}
 	}
 }

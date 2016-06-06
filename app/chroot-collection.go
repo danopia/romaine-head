@@ -20,13 +20,13 @@ func RefreshChroots() {
 }
 
 func init() {
-	ddp.Methods["start chroot"] = func(args... interface{}) interface{} {
+	ddp.Methods["start chroot"] = func(c *ddp.Client, args... interface{}) interface{} {
 		chroot := args[0].(string)
 		head.StartLeaf(chroot)
 		return true
 	}
 
-	ddp.Methods["stop chroot"] = func(args... interface{}) interface{} {
+	ddp.Methods["stop chroot"] = func(c *ddp.Client, args... interface{}) interface{} {
 		chroot := args[0].(string)
 		if leaf, ok := head.GetLeaf(chroot); ok {
 			if leaf.Conn != nil {

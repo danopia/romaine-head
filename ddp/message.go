@@ -14,6 +14,13 @@ type Message struct {
 	Fields     map[string]interface{} `json:"fields,omitempty"`
 	Subs       []string      `json:"subs,omitempty"`
 	Methods    []string      `json:"methods,omitempty"`
-	Error      map[string]interface{} `json:"error,omitempty"` // TODO: struct?
+	Error      *ClientError  `json:"error,omitempty"`
 	Result     interface{}   `json:"result,omitempty"`
+}
+
+type ClientError struct {
+	Code    int        `json:"error,omitempty"`
+	Reason  string        `json:"reason,omitempty"`
+	Message string        `json:"message,omitempty"`
+	Type    string        `json:"errorType,omitempty"`
 }
