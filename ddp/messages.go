@@ -6,13 +6,14 @@ import (
 )
 
 var Chroots *Publication
-//var Apps *Publication
+var Apps *Publication
 var Commands *Publication
 
 var Methods map[string]func(c *Client, args... interface{}) interface{}
 
 func init() {
 	Chroots = CreatePublication("chroots")
+	Apps = CreatePublication("fd-apps")
 	Commands = CreatePublication("commands")
 
 	Methods = make(map[string]func(c *Client, args... interface{}) interface{})
@@ -46,6 +47,8 @@ func (c *Client) handleMessage(m *Message) {
 			pub = Chroots
 		} else if m.Name == "commands" {
 			pub = Commands
+		} else if m.Name == "fd-apps" {
+			pub = Apps
 		}
 
 		pub.Subscribe(&ClientSub{
