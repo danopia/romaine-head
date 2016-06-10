@@ -57,7 +57,7 @@ func ServeSockJs(w http.ResponseWriter, r *http.Request) {
 
 func (c *Client) pumpMessages() {
 	for msg := range c.Sink {
-		log.Printf(">>> %+v", msg)
+		// log.Printf(">>> %+v", msg)
 
 		frame, err := json.Marshal(msg)
 		if err != nil {

@@ -50,7 +50,7 @@ func init() {
 		if leaf, ok := head.GetLeaf(chroot); ok {
 			if leaf.Conn != nil {
 				id := randSeq(20)
-				log.Printf("Running `%s %v` on %s as %s", path, params, chroot, id)
+				// log.Printf("Running `%s %v` on %s as %s", path, params, chroot, id)
 
 				ddp.Commands.Set(id, map[string]interface{}{
 					"chroot": chroot,

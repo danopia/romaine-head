@@ -6,29 +6,12 @@ import (
 	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/ddp"
-	"github.com/gorilla/websocket"
 )
 
-func HandlePacket(p *common.Packet, conn *websocket.Conn) {
-	log.Printf("leaf <<< %+v\n", p)
+func HandlePacket(p *common.Packet, leaf *head.Leaf) {
+	// log.Printf("%s <<< %+v\n", leaf.Id, p)
 
 	switch p.Cmd {
-
-	// Authenticate payload with a secret token
-	case "auth":
-		for name, leaf := range head.Leaves {
-			if leaf.Secret == p.Context {
-				leaf.Conn = conn
-				leaf.State = "running"
-				ddp.Chroots.SetField(name, "status", "running")
-
-				log.Printf("Leaf identified as %s", name)
-
-				// startLeaf(leaf)
-
-				return
-			}
-		}
 
 	// Response from an execution
 	case "exec":

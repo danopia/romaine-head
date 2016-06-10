@@ -36,8 +36,11 @@ func StartLeaf(leaf string) *Leaf {
 	output := text.NewIndentWriter(os.Stdout, prefix)
 
 	entry := &Leaf{
+		Id:     leaf,
 		State:  "launching",
 		Secret: secret,
+		Source: make(chan common.Packet),
+		Sink:   make(chan common.Packet),
 		Anchor: exec.Command("enter-chroot", "-n", leaf, "sh", "-c", command),
 	}
 	ddp.Chroots.SetField(leaf, "status", entry.State)

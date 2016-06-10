@@ -8,6 +8,18 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+type Stalk struct {
+  Conn *websocket.Conn
+  Source chan common.Packet
+  Sink chan common.Packet
+}
+
+func (s *Stalk) pumpSink() {
+	for message := range s.Sink {
+		s.Conn.WriteJSON(message)
+	}
+}
+
 func ConnectToHead(url string, secret string) {
 	var cstDialer = websocket.Dialer{
 		ReadBufferSize:  1024,
@@ -19,15 +31,22 @@ func ConnectToHead(url string, secret string) {
 		fmt.Printf("Dial: %v", err)
 	}
 
-	log.Printf("ok")
+	s := Stalk{
+		Conn: conn,
+		Source: make(chan common.Packet),
+		Sink: make(chan common.Packet),
+	}
+
+	log.Printf("Connection established to romaine-head")
+	go s.pumpSink()
 
 	// Send a welcome packet for auth
-	conn.WriteJSON(&common.Packet{
+	s.Sink <- common.Packet{
 		Cmd:     "auth",
 		Context: secret,
-	})
+	}
 
-	for {
+	for { // each incoming
 		var p common.Packet
 
 		if err := conn.ReadJSON(&p); err != nil {
@@ -35,11 +54,7 @@ func ConnectToHead(url string, secret string) {
 			return
 		}
 
-		response := HandlePacket(p)
-
-		if response != nil {
-			conn.WriteJSON(response)
-		}
+		s.handlePacket(p)
 
 		// TODO: handle this better
 		if p.Cmd == "shutdown" {

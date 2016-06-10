@@ -25,7 +25,7 @@ func (c *Client) handleMessages() {
 }
 
 func (c *Client) handleMessage(m *Message) {
-	log.Printf("<<< %+v", m)
+	// log.Printf("<<< %+v", m)
 
 	switch m.Type {
 
@@ -66,7 +66,7 @@ func (c *Client) handleMessage(m *Message) {
 
 func (c *Client) runMethod(m *Message) {
 	if handler, ok := Methods[m.Method]; ok {
-		log.Printf("Running method %s", m.Method)
+		// log.Printf("Running method %s", m.Method)
 
 		result := handler(c, m.Params...)
 		c.Sink <- &Message{
