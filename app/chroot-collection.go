@@ -12,6 +12,8 @@ func RefreshChroots() {
 	for _, item := range listRoots() {
 		ddp.Chroots.Set(item["key"].(string), map[string]interface{}{
 			"status": item["state"].(string),
+			"encrypted": item["encrypted"].(bool),
+			"targets": item["targets"].([]string),
 			"distro": "precise",
 		})
 	}
