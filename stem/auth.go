@@ -20,11 +20,13 @@ func AuthLeafConn(conn *websocket.Conn) (*head.Leaf, bool) {
 	log.Printf("leaf auth <<< %+v\n", packet)
 
 	if packet.Cmd != "auth" {
+		log.Printf("Received cmd '%s', expected 'auth'", packet.Cmd)
 		return nil, false
 	}
 
 	leaf, ok := leafBySecret(packet.Context)
 	if !ok {
+		log.Printf("No leaf found for context %s", packet.Context)
 		return nil, false
 	}
 

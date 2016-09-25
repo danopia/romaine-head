@@ -46,16 +46,13 @@ func StartLeaf(leaf string) *Leaf {
 		Sink:   make(chan common.Packet),
 		Anchor: exec.Command("enter-chroot", "-n", leaf, "sh", "-c", command),
 	}
+	Leaves[leaf] = entry
 	ddp.Chroots.SetField(leaf, "status", entry.State)
-
-	_, err := entry.Anchor.StdinPipe()
-	if err != nil {
-		log.Printf("Leaf %s rejected stdin pipe. %+v", leaf, err)
-	}
 
 	f, err := pty.Start(entry.Anchor)
 	if err != nil {
 		// TODO: enough cleanup?
+		log.Printf("Leaf %s PTY failed with %+v", leaf, err)
 		entry.State = "crashed"
 		entry.Anchor = nil
 		ddp.Chroots.SetField(leaf, "status", entry.State)
@@ -74,10 +71,10 @@ func StartLeaf(leaf string) *Leaf {
 			entry.State = "stopped"
 		}
 		entry.Anchor = nil
+		entry.Pty = nil
 
 		ddp.Chroots.SetField(leaf, "status", entry.State)
 	}()
 
-	Leaves[leaf] = entry
 	return entry
 }
