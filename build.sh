@@ -8,6 +8,11 @@ set -e # stop on error
 # $ sh ~/Downloads/romaine-head.run -- [options]
 # When launched on the chromeos side, uses root/sudo to install to $PATH.
 
+# dependencies for this script:
+# * go - left as exercise for the reader
+# * source deps - $ go get
+# * makeself - $ sudo apt-get install makeself
+
 # config for the entire script
 APP_NAME=romaine-head
 COMPILER="/usr/local/go/bin/go build"
@@ -35,6 +40,6 @@ cat << EOF > $TEMP/run
 EOF
 
 # package self-running blob
-rm $OUTPUT_PATH
+rm -f $OUTPUT_PATH
 makeself --nocomp $TEMP $OUTPUT_PATH $APP_NAME "sh ./run" 2>&1 >/dev/null \
   | grep -vE "(^./|test: x|^Header is )" || true # ignore common output
