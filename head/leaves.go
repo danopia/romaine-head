@@ -2,15 +2,15 @@ package head
 
 import (
 	"fmt"
-	"log"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 
 	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/ddp"
-	"github.com/kr/text"
 	"github.com/kr/pty"
+	"github.com/kr/text"
 )
 
 const headPath = "~/Downloads/romaine-head.run"

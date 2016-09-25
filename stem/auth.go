@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/danopia/romaine-head/common"
-	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/ddp"
+	"github.com/danopia/romaine-head/head"
 	"github.com/gorilla/websocket"
 )
 
@@ -17,32 +17,32 @@ func AuthLeafConn(conn *websocket.Conn) (*head.Leaf, bool) {
 		log.Println("Error reading leaf json: ", err)
 		return nil, false
 	}
-  log.Printf("leaf auth <<< %+v\n", packet)
+	log.Printf("leaf auth <<< %+v\n", packet)
 
-  if packet.Cmd != "auth" {
-    return nil, false
-  }
+	if packet.Cmd != "auth" {
+		return nil, false
+	}
 
-  leaf, ok := leafBySecret(packet.Context)
-  if !ok {
-    return nil, false
-  }
+	leaf, ok := leafBySecret(packet.Context)
+	if !ok {
+		return nil, false
+	}
 
-  log.Printf("Leaf identified as %s", leaf.Id)
+	log.Printf("Leaf identified as %s", leaf.Id)
 
 	leaf.Conn = conn
 	leaf.State = "running"
 	ddp.Chroots.SetField(leaf.Id, "status", "running")
 
-  return leaf, true
+	return leaf, true
 }
 
 func leafBySecret(secret string) (*head.Leaf, bool) {
-  for _, leaf := range head.Leaves {
-    if leaf.Secret == secret {
-      return leaf, true
-    }
-  }
+	for _, leaf := range head.Leaves {
+		if leaf.Secret == secret {
+			return leaf, true
+		}
+	}
 
-  return nil, false
+	return nil, false
 }

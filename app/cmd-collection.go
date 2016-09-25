@@ -5,18 +5,19 @@ import (
 
 	"math/rand"
 
-	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/ddp"
+	"github.com/danopia/romaine-head/head"
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
 func randSeq(n int) string {
-    b := make([]rune, n)
-    for i := range b {
-        b[i] = letters[rand.Intn(len(letters))]
-    }
-    return string(b)
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }
 
 /*
@@ -35,14 +36,14 @@ func RefreshChroots() {
 func init() {
 	// Garbage collect a command from memory
 	// Issued after client is done with the output
-	ddp.Methods["/commands/expire"] = func(c *ddp.Client, args... interface{}) interface{} {
+	ddp.Methods["/commands/expire"] = func(c *ddp.Client, args ...interface{}) interface{} {
 		id := args[0].(string)
 		ddp.Commands.Delete(id)
 		return true
 	}
 
 	// Spool off a command to run
-	ddp.Methods["/commands/exec"] = func(c *ddp.Client, args... interface{}) interface{} {
+	ddp.Methods["/commands/exec"] = func(c *ddp.Client, args ...interface{}) interface{} {
 		chroot := args[0].(string)
 		path := args[1].(string)
 		params := args[2].([]interface{})
@@ -54,8 +55,8 @@ func init() {
 
 				ddp.Commands.Set(id, map[string]interface{}{
 					"chroot": chroot,
-					"path": path,
-					"args": params,
+					"path":   path,
+					"args":   params,
 					// TODO: start time
 				})
 

@@ -1,8 +1,8 @@
 package ddp
 
 import (
-	"log"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/danopia/romaine-head/common"
@@ -28,11 +28,11 @@ func ServeSockJs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	c := Client{
-		Conn: conn,
+		Conn:    conn,
 		Session: common.GenerateSecret(),
-		Subs: make(map[string]*ClientSub),
-		Source: make(chan *Message),
-		Sink: make(chan *Message),
+		Subs:    make(map[string]*ClientSub),
+		Source:  make(chan *Message),
+		Sink:    make(chan *Message),
 	}
 
 	log.Println("Websocket client connected")

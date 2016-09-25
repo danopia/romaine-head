@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/danopia/romaine-head/common"
-	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/ddp"
+	"github.com/danopia/romaine-head/head"
 )
 
 func HandlePacket(p *common.Packet, leaf *head.Leaf) {
@@ -25,7 +25,7 @@ func HandlePacket(p *common.Packet, leaf *head.Leaf) {
 	case "set field":
 		id := leaf.Id + "-" + p.Extras["Id"].(string)
 		ddp.Apps.Set(id, map[string]interface{}{
-			"Chroot": leaf.Id,
+			"Chroot":                   leaf.Id,
 			p.Extras["Field"].(string): p.Extras["Value"].(map[string]interface{}),
 		})
 		// also has Collection

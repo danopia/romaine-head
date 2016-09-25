@@ -3,9 +3,9 @@ package app
 import (
 	"log"
 
-	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/ddp"
+	"github.com/danopia/romaine-head/head"
 )
 
 func RefreshChroots() {
@@ -20,13 +20,13 @@ func RefreshChroots() {
 }
 
 func init() {
-	ddp.Methods["start chroot"] = func(c *ddp.Client, args... interface{}) interface{} {
+	ddp.Methods["start chroot"] = func(c *ddp.Client, args ...interface{}) interface{} {
 		chroot := args[0].(string)
 		head.StartLeaf(chroot)
 		return true
 	}
 
-	ddp.Methods["stop chroot"] = func(c *ddp.Client, args... interface{}) interface{} {
+	ddp.Methods["stop chroot"] = func(c *ddp.Client, args ...interface{}) interface{} {
 		chroot := args[0].(string)
 		if leaf, ok := head.GetLeaf(chroot); ok {
 			if leaf.Conn != nil {
@@ -34,7 +34,7 @@ func init() {
 				ddp.Chroots.SetField(chroot, "status", leaf.State)
 
 				leaf.Conn.WriteJSON(&common.Packet{
-					Cmd:     "shutdown",
+					Cmd: "shutdown",
 				})
 				log.Printf("Issued shutdown command to %s", chroot)
 				return true

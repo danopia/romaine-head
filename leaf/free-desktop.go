@@ -1,10 +1,10 @@
 package leaf
 
 import (
+	"io/ioutil"
 	"log"
 	"path"
 	"strings"
-	"io/ioutil"
 
 	"github.com/danopia/romaine-head/common"
 	"gopkg.in/ini.v1"
@@ -17,23 +17,23 @@ const dirFolder string = "/usr/share/desktop-directories"
 // updateEntries chroot, '/usr/share/applications', 'Application', '.desktop'
 
 var keyTypes = map[string]string{
-	"NoDisplay": "bool",
-	"Hidden": "bool",
+	"NoDisplay":       "bool",
+	"Hidden":          "bool",
 	"DBusActivatable": "bool",
-	"Terminal": "bool",
-	"StartupNotify": "bool",
+	"Terminal":        "bool",
+	"StartupNotify":   "bool",
 
 	"OnlyShowIn": "string-set",
-	"NotShowIn": "string-set",
-	"Actions": "string-set",
-	"MimeType": "string-set",
+	"NotShowIn":  "string-set",
+	"Actions":    "string-set",
+	"MimeType":   "string-set",
 	"Implements": "string-set",
 	"Categories": "string-set",
-	"Keywords": "string-set",
+	"Keywords":   "string-set",
 }
 
 func (s *Stalk) watchFreeDesktop() {
-  log.Println("Watching freedesktop files")
+	log.Println("Watching freedesktop files")
 	s.watchFreeDesktopRoot(appFolder, "Application", ".desktop")
 	s.watchFreeDesktopRoot(dirFolder, "Directory", ".directory")
 }
@@ -58,12 +58,12 @@ func (s *Stalk) watchFreeDesktopRoot(root string, Type string, ext string) {
 			filePath := path.Join(root, file.Name())
 
 			s.Sink <- common.Packet{
-				Cmd:     "set field",
+				Cmd: "set field",
 				Extras: map[string]interface{}{
 					"Collection": "fd-apps",
-					"Id": file.Name(),
-					"Field": "Entry",
-					"Value": readFdFile(filePath, file.Name()),
+					"Id":         file.Name(),
+					"Field":      "Entry",
+					"Value":      readFdFile(filePath, file.Name()),
 				},
 			}
 		}

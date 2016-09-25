@@ -1,8 +1,8 @@
 package ddp
 
 import (
-	"log"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 )

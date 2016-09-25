@@ -17,8 +17,8 @@ type Leaf struct {
 	Anchor *exec.Cmd
 	Pty    *os.File
 	Conn   *websocket.Conn
-  Source chan common.Packet
-  Sink   chan common.Packet
+	Source chan common.Packet
+	Sink   chan common.Packet
 }
 
 // PumpSink into the websocket

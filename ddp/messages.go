@@ -1,22 +1,22 @@
 package ddp
 
 import (
-	"log"
 	"fmt"
+	"log"
 )
 
 var Chroots *Publication
 var Apps *Publication
 var Commands *Publication
 
-var Methods map[string]func(c *Client, args... interface{}) interface{}
+var Methods map[string]func(c *Client, args ...interface{}) interface{}
 
 func init() {
 	Chroots = CreatePublication("chroots")
 	Apps = CreatePublication("fd-apps")
 	Commands = CreatePublication("commands")
 
-	Methods = make(map[string]func(c *Client, args... interface{}) interface{})
+	Methods = make(map[string]func(c *Client, args ...interface{}) interface{})
 }
 
 func (c *Client) handleMessages() {
@@ -32,7 +32,7 @@ func (c *Client) handleMessage(m *Message) {
 
 	case "connect":
 		c.Sink <- &Message{
-			Type: "connected",
+			Type:    "connected",
 			Session: c.Session,
 		}
 
@@ -52,9 +52,9 @@ func (c *Client) handleMessage(m *Message) {
 		}
 
 		pub.Subscribe(&ClientSub{
-			Id: m.Id,
-		  Client: c,
-		  Publication: pub,
+			Id:          m.Id,
+			Client:      c,
+			Publication: pub,
 		})
 
 	case "unsub":
@@ -73,8 +73,8 @@ func (c *Client) runMethod(m *Message) {
 
 		result := handler(c, m.Params...)
 		c.Sink <- &Message{
-			Type: "result",
-			Id: m.Id,
+			Type:   "result",
+			Id:     m.Id,
 			Result: result,
 		}
 
@@ -83,19 +83,19 @@ func (c *Client) runMethod(m *Message) {
 
 		c.Sink <- &Message{
 			Type: "result",
-			Id: m.Id,
+			Id:   m.Id,
 			Error: &ClientError{
-				Code: 404,
-				Reason: fmt.Sprint("Method '%s' not found", m.Method),
+				Code:    404,
+				Reason:  fmt.Sprint("Method '%s' not found", m.Method),
 				Message: fmt.Sprint("Method '%s' not found [404]", m.Method),
-				Type: "Meteor.Error",
+				Type:    "Meteor.Error",
 			},
 		}
 	}
 
 	// Notify client that we're done
 	c.Sink <- &Message{
-		Type: "updated",
-		Methods: []string {m.Id},
+		Type:    "updated",
+		Methods: []string{m.Id},
 	}
 }

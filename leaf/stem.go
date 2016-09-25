@@ -9,9 +9,9 @@ import (
 )
 
 type Stalk struct {
-  Conn *websocket.Conn
-  Source chan common.Packet
-  Sink chan common.Packet
+	Conn   *websocket.Conn
+	Source chan common.Packet
+	Sink   chan common.Packet
 }
 
 func (s *Stalk) pumpSink() {
@@ -32,9 +32,9 @@ func ConnectToHead(url string, secret string) {
 	}
 
 	s := Stalk{
-		Conn: conn,
+		Conn:   conn,
 		Source: make(chan common.Packet),
-		Sink: make(chan common.Packet),
+		Sink:   make(chan common.Packet),
 	}
 
 	log.Printf("Connection established to romaine-head")

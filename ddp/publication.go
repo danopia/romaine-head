@@ -3,24 +3,24 @@ package ddp
 import "log"
 
 type Publication struct {
-	Name string
-	Subs map[string]*ClientSub
+	Name      string
+	Subs      map[string]*ClientSub
 	Documents map[string]map[string]interface{}
-	Tube chan *Update
+	Tube      chan *Update
 }
 
 type Update struct {
-	Id string
+	Id     string
 	Delete bool
 	Fields map[string]interface{}
 }
 
 func CreatePublication(name string) *Publication {
 	pub := &Publication{
-		Name: name,
-		Subs: make(map[string]*ClientSub),
+		Name:      name,
+		Subs:      make(map[string]*ClientSub),
 		Documents: make(map[string]map[string]interface{}),
-		Tube: make(chan *Update),
+		Tube:      make(chan *Update),
 	}
 
 	go func() {
@@ -29,9 +29,9 @@ func CreatePublication(name string) *Publication {
 				delete(pub.Documents, update.Id)
 
 				pub.Broadcast(&Message{
-					Type: "removed",
+					Type:       "removed",
 					Collection: pub.Name,
-					Id: update.Id,
+					Id:         update.Id,
 				})
 			} else if update.Id != "" {
 
@@ -50,8 +50,8 @@ func CreatePublication(name string) *Publication {
 				// Build and broadcast the message
 				msg := &Message{
 					Collection: pub.Name,
-					Id: update.Id,
-					Fields: update.Fields,
+					Id:         update.Id,
+					Fields:     update.Fields,
 				}
 
 				if exists {
@@ -81,10 +81,10 @@ func (pub Publication) Subscribe(sub *ClientSub) {
 
 	for id, doc := range pub.Documents {
 		sub.Client.Sink <- &Message{
-			Type: "added",
+			Type:       "added",
 			Collection: pub.Name,
-			Id: id,
-			Fields: doc,
+			Id:         id,
+			Fields:     doc,
 		}
 	}
 
@@ -99,11 +99,11 @@ func (pub Publication) Unsubscribe(sub *ClientSub) {
 	delete(sub.Client.Subs, sub.Id)
 	log.Println("Removed sub")
 
-	for id, _ := range pub.Documents {
+	for id := range pub.Documents {
 		sub.Client.Sink <- &Message{
-			Type: "removed",
+			Type:       "removed",
 			Collection: pub.Name,
-			Id: id,
+			Id:         id,
 		}
 	}
 
@@ -119,7 +119,7 @@ func (pub Publication) Get(id string) map[string]interface{} {
 
 func (pub Publication) Set(id string, doc map[string]interface{}) {
 	pub.Tube <- &Update{
-		Id: id,
+		Id:     id,
 		Fields: doc,
 	}
 }
@@ -133,7 +133,7 @@ func (pub Publication) SetField(id string, key string, val interface{}) {
 
 func (pub Publication) Delete(id string) {
 	pub.Tube <- &Update{
-		Id: id,
+		Id:     id,
 		Delete: true,
 	}
 }
