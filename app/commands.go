@@ -1,10 +1,10 @@
 package app
 
 import (
-	"os"
-	"log"
-	"strings"
 	"bufio"
+	"log"
+	"os"
+	"strings"
 
 	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/head"
@@ -31,10 +31,10 @@ func listRoots() []map[string]interface{} {
 		}
 
 		// which targets does the chroot include?
-	  lines, err := readLines(chrootPath + "/.crouton-targets")
-	  if err != nil {
-	    log.Println("[chronos] failed to read targets from %s : %s", name, err)
-	  } else {
+		lines, err := readLines(chrootPath + "/.crouton-targets")
+		if err != nil {
+			log.Println("[chronos] failed to read targets from %s : %s", name, err)
+		} else {
 			chroot["targets"] = lines
 		}
 
@@ -82,16 +82,16 @@ func runInChroot(chroot string, cmd []string, context string) {
 // and returns a slice of its lines.
 // http://stackoverflow.com/a/18479916
 func readLines(path string) ([]string, error) {
-  file, err := os.Open(path)
-  if err != nil {
-    return nil, err
-  }
-  defer file.Close()
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
 
-  var lines []string
-  scanner := bufio.NewScanner(file)
-  for scanner.Scan() {
-    lines = append(lines, scanner.Text())
-  }
-  return lines, scanner.Err()
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
 }
