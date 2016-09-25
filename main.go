@@ -8,8 +8,8 @@ import (
 
 	"github.com/danopia/romaine-head/app"
 	"github.com/danopia/romaine-head/common"
-	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/ddp"
+	"github.com/danopia/romaine-head/head"
 	"github.com/danopia/romaine-head/leaf"
 	"github.com/danopia/romaine-head/stem"
 )

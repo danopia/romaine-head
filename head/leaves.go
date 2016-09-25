@@ -3,12 +3,14 @@ package head
 import (
 	"fmt"
 	"log"
+	"io"
 	"os"
 	"os/exec"
 
 	"github.com/danopia/romaine-head/common"
 	"github.com/danopia/romaine-head/ddp"
 	"github.com/kr/text"
+	"github.com/kr/pty"
 )
 
 const headPath = "~/Downloads/romaine-head.run"
@@ -31,6 +33,7 @@ func StartLeaf(leaf string) *Leaf {
 
 	log.Printf("Starting %s under port %d", leaf, port)
 	command := fmt.Sprintf("%s -- --mode leaf --port %d --secret %s 2>&1", headPath, port, secret)
+	port++
 
 	prefix := []byte(fmt.Sprintf("[%s] ", leaf))
 	output := text.NewIndentWriter(os.Stdout, prefix)
@@ -45,8 +48,21 @@ func StartLeaf(leaf string) *Leaf {
 	}
 	ddp.Chroots.SetField(leaf, "status", entry.State)
 
-	entry.Anchor.Stdout = output
-	entry.Anchor.Start()
+	_, err := entry.Anchor.StdinPipe()
+	if err != nil {
+		log.Printf("Leaf %s rejected stdin pipe. %+v", leaf, err)
+	}
+
+	f, err := pty.Start(entry.Anchor)
+	if err != nil {
+		// TODO: enough cleanup?
+		entry.State = "crashed"
+		entry.Anchor = nil
+		ddp.Chroots.SetField(leaf, "status", entry.State)
+	} else {
+		entry.Pty = f
+		io.Copy(output, entry.Pty)
+	}
 
 	go func() {
 		err := entry.Anchor.Wait()

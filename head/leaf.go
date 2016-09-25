@@ -1,6 +1,7 @@
 package head
 
 import (
+	"os"
 	"os/exec"
 
 	"github.com/danopia/romaine-head/common"
@@ -14,6 +15,7 @@ type Leaf struct {
 	State  string
 	Secret string
 	Anchor *exec.Cmd
+	Pty    *os.File
 	Conn   *websocket.Conn
   Source chan common.Packet
   Sink   chan common.Packet
