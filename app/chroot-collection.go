@@ -24,7 +24,12 @@ func RefreshChroots() {
 func init() {
 	ddp.Methods["start chroot"] = func(c *ddp.Client, args ...interface{}) interface{} {
 		chroot := args[0].(string)
-		head.StartLeaf(chroot)
+
+		var password string
+		if len(args) > 1 {
+			password = args[1].(string)
+		}
+		head.StartLeaf(chroot, password)
 		return true
 	}
 

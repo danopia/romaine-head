@@ -22,9 +22,11 @@ func GetLeaf(leaf string) (val *Leaf, ok bool) {
 	return
 }
 
+// master process listens on this port
+// slave chroot processes connect to the master for instructions
 var port = 6206
 
-func StartLeaf(leaf string) *Leaf {
+func StartLeaf(leaf string, password string) *Leaf {
 	if entry, ok := GetLeaf(leaf); ok && entry.Anchor != nil {
 		return entry
 	}
@@ -33,7 +35,6 @@ func StartLeaf(leaf string) *Leaf {
 
 	log.Printf("Starting %s under port %d", leaf, port)
 	command := fmt.Sprintf("%s -- --mode leaf --port %d --secret %s 2>&1", headPath, port, secret)
-	port++
 
 	prefix := []byte(fmt.Sprintf("[%s] ", leaf))
 	output := text.NewIndentWriter(os.Stdout, prefix)
@@ -56,9 +57,15 @@ func StartLeaf(leaf string) *Leaf {
 		entry.State = "crashed"
 		entry.Anchor = nil
 		ddp.Chroots.SetField(leaf, "status", entry.State)
+
 	} else {
 		entry.Pty = f
-		io.Copy(output, entry.Pty)
+		go io.Copy(output, entry.Pty)
+
+		if password != "" {
+			// TODO: don't write this until prompted
+			f.Write([]byte(password + "\n"))
+		}
 	}
 
 	go func() {
