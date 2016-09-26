@@ -4,19 +4,20 @@ import (
 	"log"
 	"os/exec"
 	"strings"
+	"syscall"
 )
 
 func RunCmd(name string, arg ...string) (string, int) {
 	cmd := exec.Command(name, arg...)
 
 	output, err := cmd.CombinedOutput()
-	if err != nil {
-		log.Printf("cmd error %s\n", err)
-		//panic(err)
-		// TODO return the exit code from err
+	if _, ok := err.(*exec.ExitError); !ok && err != nil {
+		log.Printf("cmd error %v\n", err)
 	}
 
-	return strings.TrimRight(string(output), "\n"), -1
+	trimmedOutput := strings.TrimRight(string(output), "\n")
+	waitStatus := cmd.ProcessState.Sys().(syscall.WaitStatus)
+	return trimmedOutput, waitStatus.ExitStatus()
 }
 
 func RunCmdWithStdin(name string, arg []string, stdin string) (string, int) {
@@ -24,9 +25,11 @@ func RunCmdWithStdin(name string, arg []string, stdin string) (string, int) {
 	cmd.Stdin = strings.NewReader(stdin)
 
 	output, err := cmd.CombinedOutput()
-	if err != nil {
-		log.Printf("cmd error %s\n", err)
+	if _, ok := err.(*exec.ExitError); !ok && err != nil {
+		log.Printf("cmd error %v\n", err)
 	}
 
-	return strings.TrimRight(string(output), "\n"), -1
+	trimmedOutput := strings.TrimRight(string(output), "\n")
+	waitStatus := cmd.ProcessState.Sys().(syscall.WaitStatus)
+	return trimmedOutput, waitStatus.ExitStatus()
 }

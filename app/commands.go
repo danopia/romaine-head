@@ -26,8 +26,15 @@ func listRoots() []map[string]interface{} {
 		// is there an anchor running already?
 		if val, ok := head.GetLeaf(name); ok {
 			chroot["state"] = val.State
+
 		} else {
-			chroot["state"] = "stopped"
+			// is the chroot mounted already, maybe by something else?
+			_, code := common.RunCmd("mountpoint", "-q", "/run/crouton"+chrootPath)
+			if code == 0 {
+				chroot["state"] = "detached"
+			} else {
+				chroot["state"] = "stopped"
+			}
 		}
 
 		// which targets does the chroot include?
