@@ -75,6 +75,7 @@ func StartLeaf(leaf string, password string) *Leaf {
 		if err != nil {
 			entry.State = "crashed"
 		} else {
+			// TODO: check if it's still mounted (detached)
 			entry.State = "stopped"
 		}
 		entry.Anchor = nil
